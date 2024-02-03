@@ -168,7 +168,7 @@ function viewAllEmployees() {
         {
           name: 'role_id',
           type: 'input',
-          message: 'Enter the role ID for the employee:',
+          message: 'Enter the role id for the employee:',
         },
         {
           name: 'manager_id',
@@ -184,6 +184,7 @@ function viewAllEmployees() {
           {
             first_name: answer.first_name,
             last_name: answer.last_name,
+            // role_id: answer.role_id,
             role_id: answer.role_id,
             manager_id: answer.manager_id,
           },
