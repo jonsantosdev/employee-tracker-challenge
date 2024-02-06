@@ -84,7 +84,8 @@ function viewAllRoles() {
 function viewAllEmployees() {
   // employee ids, first names, last names, job titles, departments, salaries, and managers that the employees report to 
 
-  connection.query("SELECT * FROM employee JOIN role ON employee.role_id = role.id JOIN department ON role.department_id = department.id JOIN employee AS manager ON employee.manager_id = manager.id", (err, results) => {
+  // connection.query("SELECT * FROM employee JOIN role ON employee.role_id = role.id JOIN department ON role.department_id = department.id JOIN employee AS manager ON employee.manager_id = manager.id", (err, results) => {
+  connection.query("SELECT employee.id, employee.first_name, employee.last_name, role.title, CONCAT(manager.first_name, ' ', manager.last_name) AS manager_name FROM employee JOIN role ON employee.role_id = role.id JOIN department ON role.department_id = department.id JOIN employee AS manager ON employee.manager_id = manager.id", (err, results) => {
     // console.log(results)
     console.table(results);
     start();
@@ -104,7 +105,7 @@ function viewAllEmployees() {
         connection.query(query, { name: answer.name }, (err) => {
           if (err) throw err;
           console.log('Department added successfully!');
-          console.log(answer); 
+          // console.log(answer); 
           
         });
         start();
@@ -153,7 +154,9 @@ function viewAllEmployees() {
 
   // Function to add an employee
   function addEmployee() {
-    inquirer
+    connection.query("SELECT role.title AS name, role.id AS value FROM role;", (err, roleChoices) => {
+
+      inquirer
       .prompt([
         {
           name: 'first_name',
@@ -165,10 +168,16 @@ function viewAllEmployees() {
           type: 'input',
           message: 'Enter the last name of the employee:',
         },
+        // {
+        //   name: 'role_id',
+        //   type: 'input',
+        //   message: 'Enter the role id for the employee:',
+        // },
         {
           name: 'role_id',
-          type: 'input',
-          message: 'Enter the role id for the employee:',
+          type: 'list',
+          message: 'Select the role title for the employee:',
+          choices: roleChoices
         },
         {
           name: 'manager_id',
@@ -196,8 +205,10 @@ function viewAllEmployees() {
         );
         start();
       });
-  }
 
+    })
+  }
+  
    // Function to update an employee role
  function updateEmployeeRole() {
   inquirer
